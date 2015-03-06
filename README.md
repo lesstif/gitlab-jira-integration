@@ -2,7 +2,7 @@
 
 ## What
 * [JIRA DVCS Connector Plugin](https://marketplace.atlassian.com/plugins/com.atlassian.jira.plugins.jira-bitbucket-connector-plugin) does not support gitlab.
-* [GitLab Community Edition]i(http://doc.gitlab.com/ee/integration/jira.html) does not support Advanced JIRA Integration(EE Only).
+* [GitLab Community Edition](http://doc.gitlab.com/ee/integration/jira.html) does not support Advanced JIRA Integration(EE only feature).
 
 GitLab-JIRA-Integration is a PHP script run with gitlab web hooks and performing JIRA issue tracker.
 
@@ -10,8 +10,8 @@ GitLab-JIRA-Integration is a PHP script run with gitlab web hooks and performing
 
 - PHP > 5.4 (although pull request to support 2 are welcome)
 - [php-jira-rest-client](https://github.com/lesstif/php-jira-rest-client)
-- Atlassian JIRA 6.2 or above 
-- Gitlab CE 6.7 or above
+- Atlassian JIRA 6 or above 
+- Gitlab CE 6 or above
 
 ## Installation
 
