@@ -18,5 +18,10 @@
             "email": "lesstif@gmail.com",
             "homepage": "http://lesstif.com/"
         }
-    ]
+    ],
+     "autoload": {
+        "psr-4" : {
+            "GitLabJira\\" : "src"
+        }
+    }
 }

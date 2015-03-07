@@ -1,5 +1,7 @@
 <?php
 
+namespace GitLabJira;
+
 /**
  * Simple exception
  * 

@@ -53,13 +53,13 @@ class PushProcess {
     public $project_id;
 
  	/** repository info
-	 * @var GitLabJira\Repository
+	 * @var \GitLabJira\Repository
 	 * 
 	 */
     public $repository;
 
 	/** repository info
-	 * @var CommitList[\GitLabJira\Commit]
+	 * @var array CommitList[\GitLabJira\Commit]
 	 * 
 	 */
     public $commits;

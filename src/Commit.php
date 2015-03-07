@@ -17,7 +17,7 @@ class Commit {
 	public $message;
 
 	/** commit timestamp : "2011-12-12T14:27:31+02:00"
-	 * @var string
+	 * @var DateTime
 	 * 
 	 */
 	public $timestamp;
