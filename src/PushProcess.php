@@ -2,6 +2,8 @@
 
 namespace GitLabJira;
 
+require 'Exception.php';
+
 /**
  * process gitlab push hook
  * 
@@ -69,6 +71,33 @@ class PushProcess {
 	 * 
 	 */
     public $total_commits_count;
+
+    private function refJiraIssue() 
+    {
+    	//USER mentioned this issue in LINK_TO_THE_MENTION
+    }
+
+    // issue status array
+    private $keywordMap = array (
+    	'(fix|fixes|fixed)' => 'Resolved',
+    	'(resolve|resolves|resolved)' => 'Resolved',
+    	'(close|closes|closed)' => 'Closed'
+    	);
+
+    /**
+     * Change Jira issues status directly if commit message to have trigger keywords.
+     * 
+     */ 
+    private function changeJiraIssueStatus()
+    {
+    	
+    }
+
+    // 
+    public function jiraIntegrate()
+    {
+    	throw new JiraIntegrationException("not yet implemented");
+    }
 }
 
 ?>

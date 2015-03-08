@@ -6,7 +6,7 @@ namespace GitLabJira;
  * Simple exception
  * 
  */ 
-class JiraIntegrationException extends Exception
+class JiraIntegrationException extends \Exception
 {
 }
 

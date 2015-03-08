@@ -23,6 +23,8 @@ class PushTest extends PHPUnit_Framework_TestCase
 		try {
 			$push = new PushProcess();
 			
+			$push->jiraIntegrate();
+
 			$this->assertTrue(true);
 		} catch (JiraIntegrationException $e) {
 			$this->assertTrue(FALSE, $e->getMessage());
