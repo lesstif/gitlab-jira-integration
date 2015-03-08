@@ -1,5 +1,6 @@
 <?php
 
+use GitLabJira\Push;
 use GitLabJira\PushProcess;
 
 class PushTest extends PHPUnit_Framework_TestCase 
@@ -9,7 +10,7 @@ class PushTest extends PHPUnit_Framework_TestCase
 		$json = json_decode(file_get_contents('tests/push-reg-body.json'));
 
 		$mapper = new JsonMapper();
-		$push = $mapper->map($json, new PushProcess());
+		$push = $mapper->map($json, new Push());
 		
 		$this->assertEquals("Diaspora", $push->repository->name);
 		$this->assertEquals("da1560886d4f094c3e6c9ef40349f7d38b5d27d7", $push->after);
