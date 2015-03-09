@@ -1,7 +1,7 @@
 <?php
 
 use GitLabJira\Push;
-use GitLabJira\PushProcess;
+use GitLabJira\PushService;
 
 class PushTest extends PHPUnit_Framework_TestCase 
 {
@@ -22,9 +22,9 @@ class PushTest extends PHPUnit_Framework_TestCase
 	public function testPushProcess()
     {
 		try {
-			$push = new PushProcess();
+			$pushService = new PushService(file_get_contents('tests/commit-message-with-key.json'));
 			
-			$push->jiraIntegrate();
+			$pushService->jiraIntegrate();
 
 			$this->assertTrue(true);
 		} catch (JiraIntegrationException $e) {
