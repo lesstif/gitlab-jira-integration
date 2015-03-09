@@ -18,14 +18,15 @@ class RootClass {
 
 	public function __construct()
     {	
-    	$this->config = Config::load('config.jira.json', 'config.integration.json');
+    	$this->config = new Config(['config.jira.json', 'config.integration.json']);
 
-    	  // create logger      
+    	  // create logger
         $this->log =  new Logger('GitLabJira');
     	$this->log->pushHandler(new StreamHandler(
-    		$this->config->get('LOG_FILE', 'jira-rest-client.log'), 
+    		$this->config->get('LOG_FILE', 'jira-rest-client.log'),
     		$this->config->get('LOG_LEVEL', Logger::INFO)
-    		));    	
+    		));
+    	var_dump($this->config);
     }
 }
 
