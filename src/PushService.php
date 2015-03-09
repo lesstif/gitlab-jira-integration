@@ -35,15 +35,17 @@ class PushService extends RootClass {
     	//USER mentioned this issue in LINK_TO_THE_MENTION
         $keywords = $this->config->get('jira.transition.keyword');
 
+        /*
         foreach ($keywords as $transitName => $keywordArray) {
             $reg = "(" . implode("|", $keywordArray) . ")[ \t,]+" . $issuePattern;
             print($transitName) . "\n";
         }
+        */
 
-        preg_match_all('/(?:close|fix(?:ed)?|fixes)[\t ,]((?P<k>([a-zA-Z]{2,}-[0-9]{1,})))/i', $commitMessage, $result, PREG_PATTERN_ORDER);
+        preg_match_all('/(?:close|fix(?:ed)?|fixes)[\t ,]((?P<k>([A-Z]{2,}-[0-9]{1,})))/i', $commitMessage, $result, PREG_PATTERN_ORDER);
         for ($i = 0; $i < count($result[0]); $i++) {
             # Matched text = $result[0][$i];
-            print_r($result[0][$i]);
+            print("Fetch Keyword " . $result[0][$i]) . "\n";
         }
     }
 
