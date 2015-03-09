@@ -4,6 +4,7 @@ namespace GitLabJira;
 
 use \GitLabJira\JiraIntegrationException;
 use \GitLabJira\RootClass;
+
 /**
  * process gitlab push hook
  * 
@@ -12,11 +13,18 @@ use \GitLabJira\RootClass;
  */
 class PushProcess extends RootClass {
 
+	public function __construct($jsonRequestBody) {
+		$json = json_decode($jsonRequestBody);
+
+		$mapper = new JsonMapper();
+		$this->push = $mapper->map($json, new Push());
+	}
+
 	/** Push json data
 	 * @var \GitLabJira\Push
 	 * 
 	 */
-	public $push;
+	private $push;
 
     private function refJiraIssue() 
     {
@@ -27,7 +35,7 @@ class PushProcess extends RootClass {
      * Change Jira issues status directly if commit message to have trigger keywords.
      * 
      */ 
-    private function changeJiraIssueStatus()
+    private function transitionJiraIssue()
     {
     	$this->log->addDebug("changeJiraIssueStatus");
     }

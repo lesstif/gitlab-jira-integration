@@ -22,7 +22,7 @@ class PushTest extends PHPUnit_Framework_TestCase
 	public function testPushProcess()
     {
 		try {
-			$push = new PushProcess();
+			$push = new PushProcess(file_get_contents('tests/push-reg-body.json'));
 			
 			$push->jiraIntegrate();
 
