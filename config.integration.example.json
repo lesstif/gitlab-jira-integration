@@ -8,33 +8,30 @@
         "gitlab-userid2": "jira-userid2",
         "gitlab-userid3": "jira-userid3"
     },
-    "jira": {
-        "transition": {
-            "message": "Issue KEYWORD with LINK_TO_COMMIT",
-            "keyword": {
-                "Resolved": [
-                    "resolve",
-                    "resolves",
-                    "resolved",
-                    "fix",
-                    "fixed",
-                    "fixes"
-                ],
-                "Closed": [
-                    "close",
-                    "closes",
-                    "closed"
-                ]
-            }
-
-        },
-        "referencing": {
-            "message": "USER mentioned this issue in LINK_TO_COMMIT",
-            "keyword": [
-                "see",
-                "ref",
-                "refs"
-            ]            
+    "transition": {
+        "message": "Issue KEYWORD with LINK_TO_COMMIT",
+        "keyword": {
+            "Resolved": [
+                "resolve",
+                "resolves",
+                "resolved",
+                "fix",
+                "fixed",
+                "fixes"
+            ],
+            "Closed": [
+                "close",
+                "closes",
+                "closed"
+            ]
         }
+    },
+    "referencing": {
+        "message": "USER mentioned this issue in LINK_TO_COMMIT",
+        "keyword": [
+            "see",
+            "ref",
+            "refs"
+        ]
     }
 }

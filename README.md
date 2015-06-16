@@ -4,8 +4,11 @@
 * [JIRA DVCS Connector Plugin](https://marketplace.atlassian.com/plugins/com.atlassian.jira.plugins.jira-bitbucket-connector-plugin) does not support gitlab.
 * [GitLab Community Edition](http://doc.gitlab.com/ee/integration/jira.html) does not support Advanced JIRA Integration(EE only feature).
 
-GitLab-JIRA-Integration is a PHP web app executed by gitlab web hooks and interact with JIRA using JIRA-REST API.
+GitLab-JIRA-Integration is a small PHP standalone app executed by gitlab web hooks and interact with JIRA using JIRA-REST API.
 If you have questions contact to me or open an issue on GitHub.
+
+## How it works.
+![How it works.](https://cloud.githubusercontent.com/assets/404534/8185075/f5241acc-147c-11e5-9961-32e241948ee9.png)
 
 ## Requirements
 
@@ -16,25 +19,23 @@ If you have questions contact to me or open an issue on GitHub.
 
 ## Installation
 
+Install Composer
 ```
 composer require lesstif/gitlab-jira-integration dev-master
 ```
 
-create config.jira.json file on your project root.
-````json
-{
-    "host": "https://jira.example.com",
-    "username": "username",
-    "password": "password",
-    "CURLOPT_SSL_VERIFYHOST": false,
-    "CURLOPT_SSL_VERIFYPEER": false,
-    "CURLOPT_VERBOSE": false,
-    "LOG_FILE": "jira-rest-client.log",
-    "LOG_LEVEL": "DEBUG"
-}
-````
+copy .env.example file to .env in the root of your project and Add your application configuration to a .env.
+```
+JIRA_HOST="https://your-jira.host.com"
+JIRA_USER="jira-username"
+JIRA_PASS="jira-password"
 
-create config.integration.json file on your project root.
+GITLAB_HOST="https://your-gitlab.host.com"
+GITLAB_USER="gitlab-username"
+GITLAB_PASS="gitlab-password"
+```
+
+copy config.integration.example.json to config.jira.json in the root of your project.
 ````json
 {
     "accept.host": [
@@ -46,39 +47,46 @@ create config.integration.json file on your project root.
         "gitlab-userid2": "jira-userid2",
         "gitlab-userid3": "jira-userid3"
     },
-    "jira": {
-        "transition": {
-        	"message": "Issue KEYWORD with LINK_TO_COMMIT",
-            "keyword": {
-                "Resolved": [
-                    "resolve",
-                    "resolves",
-                    "resolved",
-                    "fix",
-                    "fixed",
-                    "fixes"
-                ],
-                "Closed": [
-                    "close",
-                    "closes",
-                    "closed"
-                ]
-            }
-            
-        },
-        "referencing": {
-        	"message": "USER mentioned this issue in LINK_TO_COMMIT",
-            "keyword": [
-                "see",
-                "ref",
-                "refs"
-            ]            
+    "transition": {
+        "message": "Issue KEYWORD with LINK_TO_COMMIT",
+        "keyword": {
+            "Resolved": [
+                "resolve",
+                "resolves",
+                "resolved",
+                "fix",
+                "fixed",
+                "fixes"
+            ],
+            "Closed": [
+                "close",
+                "closes",
+                "closed"
+            ]
         }
+    },
+    "referencing": {
+        "message": "USER mentioned this issue in LINK_TO_COMMIT",
+        "keyword": [
+            "see",
+            "ref",
+            "refs"
+        ]
     }
 }
+
 ````
 
 ## Usage 
+
+```
+php -S 0.0.0.0:9000
+```
+## Configuration
+
+### gitlab configuration
+Choose  > **Project Settings* -> **Web Hooks** .
+![gitlab configuration.](https://cloud.githubusercontent.com/assets/404534/8186689/b818862c-1486-11e5-9d9a-8d33c30e9cd3.png)
 
 # License
 
