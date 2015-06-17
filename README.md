@@ -21,21 +21,33 @@ If you have questions contact to me or open an issue on GitHub.
 
 Install Composer
 ```
-composer require lesstif/gitlab-jira-integration dev-master
+$ composer require lesstif/gitlab-jira-integration dev-master
 ```
 
-copy .env.example file to .env in the root of your project and Add your application configuration to a .env.
+copy .env.example file to `.env` in the root of your project.
+```sh
+$ cp .env.example .env
+```
+
+You would first define a Jira and Gitlab connection .env configuration.
 ```
 JIRA_HOST="https://your-jira.host.com"
 JIRA_USER="jira-username"
 JIRA_PASS="jira-password"
-
 GITLAB_HOST="https://your-gitlab.host.com"
 GITLAB_TOKEN="gitlab-private-token-for-api"
 ```
+**Tip:**  In the folowwing steps, you will generate your private token for API.
+- login gitlab and click on **Profile Settings**
+- Click on **Account**
+- Here, Your can find your private token.
 
-copy config.integration.example.json to config.jira.json in the root of your project.
+copy config.integration.example.json to `config.integration.json` in the root of your project.
+```sh
+$ cp config.integration.example.json config.integration.json
+```
 
+Here is the default configuration, for interact with Jira.
 ````json
 {
     "accept.host": [
@@ -59,12 +71,11 @@ copy config.integration.example.json to config.jira.json in the root of your pro
         "message": "[~%s] mentioned this issue in %s"
     }
 }
-
 ````
 
 ## Usage 
 
-Run PHP standalone web server on the gitlab-jira integration server. (Ex: my-host.com).
+Run PHP standalone web server on the gitlab-jira integration server. (eg: my-host.com).
 ```
 php -S 0.0.0.0:9000
 ```
@@ -72,17 +83,17 @@ php -S 0.0.0.0:9000
 ## Configuration
 
 ### gitlab configuration
-- Choose  > **Project Settings* -> **Web Hooks** .
-- config URL to **http://tmy-host.com:9000/gitlab**
+- Choose  > **Project Settings** -> **Web Hooks**.
+- Setting URL to your gitlab-jira integration's running Host. (eg: **http://my-host.com:9000/gitlab**)
 ![gitlab configuration.](https://cloud.githubusercontent.com/assets/404534/8201559/34dc5004-150d-11e5-9baf-6d7226cd8b84.png)
 
 ### Referencing JIRA isssues
-- git commit with JIRA Issue Key(eg. TEST-123) 
+- git commit with JIRA Issue Key(eg. TEST-123 or test-123)
 - Gitlab-Jira-Integrator will automatically add a comment in specific JIRA Issue.
 
 ### Resolving or Closing JIRA isssues
-- git commit with JIRA Issue Key(eg. TEST-123) 
-- Gitlab-Jira-Integrator will automatically add a comment and closing(or fixing) directly in specific JIRA Issue by using trigger keywords(setting in config.integration.json) in commit message. (eg. 'Closed TEST-123' or 'fix test-123')
+- git commit with JIRA Issue Key and trigger keywords(eg. 'Closed TEST-123' or 'fix test-123')
+- Gitlab-Jira-Integrator will automatically add a comment and closing(or fixing) directly in specific JIRA Issue by using trigger keywords(setting in config.integration.json) in commit message. 
 
 
 # License
