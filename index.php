@@ -17,9 +17,10 @@ $app = new \Slim\Slim([
         ])
     ]);
 
-$USER_LIST = 'users.json';
+define("USER_LIST", 'users.json');
+
 // create gitlab user list
-createUserList($USER_LIST, $app->log);
+createUserList(USER_LIST, $app->log);
 
 $app->get('/', function () {
     echo "Hello";    
@@ -73,6 +74,7 @@ function processPushHook($app)
 
     $issueKey = "TEST-960";
 
+    $u = getGitUserName(2, $app);
     foreach($hook['commits'] as $commit)
     {
         $app->log->info('Commit : ' . json_encode($commit, JSON_PRETTY_PRINT));
@@ -80,7 +82,7 @@ function processPushHook($app)
         try {           
             $comment = new Comment();
 
-            $body = "Issue solved with " . $commit['url'];
+            $body = sprintf("[~%s] Issue solved with %s", $u->username, $commit['url']);
 
             $comment->setBody($body)
                 ->setVisibility('role', 'Users');
@@ -127,11 +129,11 @@ function processMergeReqHook($app)
 /**
  * get gitlab username(aka 'lesstif') by id(int: 1)
  */
-function getGitUserName($id, $username, $app)
+function getGitUserName($id, $app)
 {
-    $users = loadGitLabUser();
+    $users = loadGitLabUser($app->log);
 
-    $u = $users[$id];
+    $u = $users->{$id};
     if ( is_null($u))
     {
         $app->log->info("user($id) not found:");
@@ -140,7 +142,7 @@ function getGitUserName($id, $username, $app)
     }
 }
 
-function createUserList($userFile, $log)
+function createUserList($log)
 {
      // fetch users list from gitlab and create file.
     $dotenv = new \Dotenv\Dotenv('.');
@@ -158,48 +160,44 @@ function createUserList($userFile, $log)
         ],
     ]);
 
-    $log->info("Status Code:" . $response->getStatusCode());
-
-    if ($response->hasHeader('Content-Length')) {
-        echo "It exists" . $response->getHeader('Content-Length');
-    }
+    if ($response->getStatusCode() != 200)
+    {
+        $log->error("Gitlab Get Users Status Code:" . $response->getStatusCode());
+        return ;    
+    }    
 
     $body = json_decode($response->getBody());
-    
-    $log->info("Gitlab Body:" . json_encode($response->getBody()));
-    
+        
     $users = [];
 
     foreach($body as $u)
     {        
-        dump($u);/*
-        $users[$u['id']] = [
+        $users[$u->id] = [
             'name' => $u->name,
             'username' => $u->username,
             'state' => $u->state,
             ];
-            */
     }
 
     $filesystem = new \League\Flysystem\Filesystem(new \League\Flysystem\Adapter\Local(__DIR__));
 
-    $filesystem->put($userFile, json_encode($users, JSON_PRETTY_PRINT));
+    $filesystem->put(USER_LIST, json_encode($users, JSON_PRETTY_PRINT));
 
     return $users;
 }
 
-function loadGitLabUser($userFile, $log)
+function loadGitLabUser($log)
 {
     $filesystem = new \League\Flysystem\Filesystem(new \League\Flysystem\Adapter\Local(__DIR__));
 
-    if ($filesystem->has($userFile))
+    if ($filesystem->has(USER_LIST))
     {
-        $users = $filesystem->read($userFile);
+        $users = $filesystem->read(USER_LIST);
 
         return json_decode($users);
     }
 
-    return createUserList($userFile);
+    return createUserList(USER_LIST);
 }
 
 ?>

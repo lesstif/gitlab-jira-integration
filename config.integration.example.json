@@ -13,16 +13,10 @@
         "keyword": {
             "Resolved": [
                 "resolve",
-                "resolves",
-                "resolved",
-                "fix",
-                "fixed",
-                "fixes"
+                "fix"
             ],
             "Closed": [
-                "close",
-                "closes",
-                "closed"
+                "close"
             ]
         }
     },
@@ -30,8 +24,7 @@
         "message": "USER mentioned this issue in LINK_TO_COMMIT",
         "keyword": [
             "see",
-            "ref",
-            "refs"
+            "ref"
         ]
     }
 }

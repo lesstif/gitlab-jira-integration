@@ -31,8 +31,7 @@ JIRA_USER="jira-username"
 JIRA_PASS="jira-password"
 
 GITLAB_HOST="https://your-gitlab.host.com"
-GITLAB_USER="gitlab-username"
-GITLAB_PASS="gitlab-password"
+GITLAB_TOKEN="gitlab-private-token-for-api"
 ```
 
 copy config.integration.example.json to config.jira.json in the root of your project.
@@ -42,35 +41,23 @@ copy config.integration.example.json to config.jira.json in the root of your pro
         "localhost",
         "your-gitlab-host-here"
     ],
-    "userid.mapping": {
-        "gitlab-userid1": "jira-userid1",
-        "gitlab-userid2": "jira-userid2",
-        "gitlab-userid3": "jira-userid3"
-    },
     "transition": {
-        "message": "Issue KEYWORD with LINK_TO_COMMIT",
+        "message": "[~%s] Issue %s with %s",
         "keyword": {
             "Resolved": [
                 "resolve",
-                "resolves",
-                "resolved",
-                "fix",
-                "fixed",
-                "fixes"
+                "fix"
             ],
             "Closed": [
-                "close",
-                "closes",
-                "closed"
+                "close"
             ]
         }
     },
     "referencing": {
-        "message": "USER mentioned this issue in LINK_TO_COMMIT",
+        "message": "[~%s] mentioned this issue in %s",
         "keyword": [
             "see",
-            "ref",
-            "refs"
+            "ref"
         ]
     }
 }
@@ -79,14 +66,18 @@ copy config.integration.example.json to config.jira.json in the root of your pro
 
 ## Usage 
 
+Run PHP standalone web server on the gitlab-jira integration server. (Ex: my-host.com).
 ```
 php -S 0.0.0.0:9000
 ```
+
 ## Configuration
 
 ### gitlab configuration
-Choose  > **Project Settings* -> **Web Hooks** .
+- Choose  > **Project Settings* -> **Web Hooks** .
+- config URL to **http://tmy-host.com:9000/gitlab**
 ![gitlab configuration.](https://cloud.githubusercontent.com/assets/404534/8186689/b818862c-1486-11e5-9d9a-8d33c30e9cd3.png)
+- push your change set.
 
 # License
 
@@ -97,3 +88,4 @@ Apache V2 License
 * [JIRA 6.2 REST API documentation](https://docs.atlassian.com/jira/REST/6.2/)
 * [GitLab-EE Jira integration](http://doc.gitlab.com/ee/integration/jira.html)
 * [Processing JIRA issues with commit messages](https://confluence.atlassian.com/display/Cloud/Processing+JIRA+issues+with+commit+messages)
+
