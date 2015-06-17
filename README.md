@@ -40,9 +40,10 @@ GITLAB_TOKEN="gitlab-private-token-for-api"
 **Tip:**  In the following steps, you will generate your private token for API.
 - login gitlab and click on **Profile Settings**
 - Click on **Account**
-- Here, Your can find your private token.
+- Here, You can find your private token.
+![Private Token](https://cloud.githubusercontent.com/assets/404534/8210509/555cf47e-154d-11e5-83da-84f6f96b4fae.png)
 
-copy config.integration.example.json to `config.integration.json` in the root of your project.
+Next, copy config.integration.example.json to `config.integration.json` in the root of your project.
 ```sh
 $ cp config.integration.example.json config.integration.json
 ```
