@@ -2,6 +2,9 @@
 
 require 'vendor/autoload.php';
 
+use JiraRestApi\Issue\IssueService;
+use JiraRestApi\Issue\Comment;
+
 $app = new \Slim\Slim([
     'debug' => true,
     'mode' => 'development',
@@ -57,8 +60,38 @@ $app->log->info($req->getResourceUri () . ' connect from : ' . $req->getHost() .
 $app->run();
 
 function processPushHook($app)
-{
-    $app->log->info('processPushHook');
+{    
+    $json = $app->request->getBody();
+
+    $hook = json_decode($json, true);
+
+    $app->log->debug('processPushHook : ' . json_encode($hook, JSON_PRETTY_PRINT));
+
+    $issueKey = "TEST-960";
+
+    foreach($hook['commits'] as $commit)
+    {
+        $app->log->info('Commit : ' . json_encode($commit, JSON_PRETTY_PRINT));
+        //dump($commit);
+        
+        try {           
+            $comment = new Comment();
+
+            $body = "Issue solved with " . $commit['url'];
+
+            $comment->setBody($body)
+                ->setVisibility('role', 'Users');
+            ;
+
+            $issueService = new IssueService();
+            $ret = $issueService->addComment($issueKey, $comment);
+            
+        } catch (JIRAException $e) {
+            $this->assertTrue(FALSE, "add Comment Failed : " . $e->getMessage());
+        }
+    }    
+
+
     $app->response->setStatus(200);
 }
 
