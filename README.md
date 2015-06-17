@@ -29,7 +29,7 @@ copy .env.example file to `.env` in the root of your project.
 $ cp .env.example .env
 ```
 
-You would first define a Jira and Gitlab connection .env configuration.
+You would first define a Jira and Gitlab connection into `.env` configuration.
 ```
 JIRA_HOST="https://your-jira.host.com"
 JIRA_USER="jira-username"
@@ -37,7 +37,7 @@ JIRA_PASS="jira-password"
 GITLAB_HOST="https://your-gitlab.host.com"
 GITLAB_TOKEN="gitlab-private-token-for-api"
 ```
-**Tip:**  In the folowwing steps, you will generate your private token for API.
+**Tip:**  In the following steps, you will generate your private token for API.
 - login gitlab and click on **Profile Settings**
 - Click on **Account**
 - Here, Your can find your private token.
