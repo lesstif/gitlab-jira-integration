@@ -3,28 +3,21 @@
         "localhost",
         "your-gitlab-host-here"
     ],
-    "userid.mapping": {
-        "gitlab-userid1": "jira-userid1",
-        "gitlab-userid2": "jira-userid2",
-        "gitlab-userid3": "jira-userid3"
-    },
     "transition": {
-        "message": "Issue KEYWORD with LINK_TO_COMMIT",
-        "keyword": {
-            "Resolved": [
-                "resolve",
-                "fix"
+        "message": "[~%s] Issue %s with %s",
+        "keywords": [
+            [
+                "Resolved",
+                "[resolve|fix]"
             ],
-            "Closed": [
-                "close"
+            [
+                "Closed",
+                "[close]"
             ]
-        }
+        ]
     },
     "referencing": {
-        "message": "USER mentioned this issue in LINK_TO_COMMIT",
-        "keyword": [
-            "see",
-            "ref"
-        ]
+        "message": "[~%s] mentioned this issue in %s"
     }
 }
+

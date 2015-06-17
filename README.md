@@ -35,6 +35,7 @@ GITLAB_TOKEN="gitlab-private-token-for-api"
 ```
 
 copy config.integration.example.json to config.jira.json in the root of your project.
+
 ````json
 {
     "accept.host": [
@@ -43,22 +44,19 @@ copy config.integration.example.json to config.jira.json in the root of your pro
     ],
     "transition": {
         "message": "[~%s] Issue %s with %s",
-        "keyword": {
-            "Resolved": [
-                "resolve",
-                "fix"
+        "keywords": [
+            [
+                "Resolved",
+                "[resolve|fix]"
             ],
-            "Closed": [
-                "close"
+            [
+                "Closed",
+                "[close]"
             ]
-        }
+        ]
     },
     "referencing": {
-        "message": "[~%s] mentioned this issue in %s",
-        "keyword": [
-            "see",
-            "ref"
-        ]
+        "message": "[~%s] mentioned this issue in %s"
     }
 }
 
@@ -76,8 +74,16 @@ php -S 0.0.0.0:9000
 ### gitlab configuration
 - Choose  > **Project Settings* -> **Web Hooks** .
 - config URL to **http://tmy-host.com:9000/gitlab**
-![gitlab configuration.](https://cloud.githubusercontent.com/assets/404534/8186689/b818862c-1486-11e5-9d9a-8d33c30e9cd3.png)
-- push your change set.
+![gitlab configuration.](https://cloud.githubusercontent.com/assets/404534/8201559/34dc5004-150d-11e5-9baf-6d7226cd8b84.png)
+
+### Referencing JIRA isssues
+- git commit with JIRA Issue Key(eg. TEST-123) 
+- Gitlab-Jira-Integrator will automatically add a comment in specific JIRA Issue.
+
+### Resolving or Closing JIRA isssues
+- git commit with JIRA Issue Key(eg. TEST-123) 
+- Gitlab-Jira-Integrator will automatically add a comment and closing(or fixing) directly in specific JIRA Issue by using trigger keywords(setting in config.integration.json) in commit message. (eg. 'Closed TEST-123' or 'fix test-123')
+
 
 # License
 

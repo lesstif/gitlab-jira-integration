@@ -4,6 +4,7 @@ require 'vendor/autoload.php';
 
 use JiraRestApi\Issue\IssueService;
 use JiraRestApi\Issue\Comment;
+use JiraRestApi\Issue\Transition;
 
 $app = new \Slim\Slim([
     'debug' => true,
@@ -72,30 +73,80 @@ function processPushHook($app)
 
     $app->log->debug('processPushHook : ' . json_encode($hook, JSON_PRETTY_PRINT));
 
-    $issueKey = "TEST-960";
-
     $u = getGitUserName(2, $app);
     foreach($hook['commits'] as $commit)
     {
         $app->log->info('Commit : ' . json_encode($commit, JSON_PRETTY_PRINT));
         
-        try {           
-            $comment = new Comment();
+        $issueKey = extractIssueKey($commit['message']);
+        if (empty($issueKey))
+            continue;
 
-            $body = sprintf("[~%s] Issue solved with %s", $u->username, $commit['url']);
+        $transitionName = needTransition($commit['message'], $message);
 
-            $comment->setBody($body)
-                ->setVisibility('role', 'Users');
-            
-            $issueService = new IssueService();
-            $ret = $issueService->addComment($issueKey, $comment);
+        try {
+            if (empty($transitionName))
+            {
+                $comment = new Comment();
+
+                $body = sprintf($message, $u->username, $commit['url']);
+
+                $comment->setBody($body);
+                
+                $issueService = new IssueService();
+                $ret = $issueService->addComment($issueKey, $comment);
+            } else //need issue transition
+            {
+                $transition = new Transition();
+                $transition->setTransitionName($transitionName);
+                $body = sprintf($message, $u->username, $transitionName, $commit['url']);
+                $transition->setCommentBody($body);
+
+                $issueService = new IssueService();
+
+                $issueService->transition($issueKey, $transition);
+            }
             
         } catch (JIRAException $e) {
-            $this->assertTrue(FALSE, "add Comment Failed : " . $e->getMessage());
+             $app->log->error("add Comment Failed : " . $e->getMessage());
         }
     }    
 
     $app->response->setStatus(200);
+}
+
+function needTransition($subject, &$message)
+{
+    $string = file_get_contents('config.integration.json');
+    $config = json_decode($string);
+
+    foreach($config->transition->keywords as $key)
+    {
+        $cnt = preg_match_all($key[1],  $subject, $matches);
+        if ($cnt > 0)
+        {
+            // matched. get keyword('Resolved', 'Closed')
+            $message = $config->transition->message;
+            return $key[0];
+        }
+    }
+
+    $message = $config->referencing->message;
+
+    return null;
+}
+
+function extractIssueKey($subject)
+{
+    $pattern = '([a-zA-Z]+-[0-9]+)';
+
+    $cnt = preg_match_all($pattern, $subject, $matches);
+
+    if ($cnt == 0)
+        return null;
+
+    // return only first matched key.
+    return $matches[0][0];
 }
 
 function processTagHook($app)
