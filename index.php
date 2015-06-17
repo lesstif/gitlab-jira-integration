@@ -33,9 +33,23 @@ $app->post('/gitlab/', function () use($eventType, $app) {
         case 'Push Hook':
             processPushHook($app);
             break;
-    }
-    
-    $app->response->setStatus(503);
+        case 'Tag Push Hook':
+            processTagHook($app);
+            break;
+        case 'Issue Hook':
+            processIssueHook($app);
+            break;
+        case 'Note Hook':
+            processCommentHook($app);
+            break;
+        case 'Merge Request Hook':
+            processMergeReqHook($app);
+            break;
+        default:
+            $app->response->setStatus(404);
+            $app->response->setBody('Unknown eventType: ' . $eventType);
+            return;            
+    }    
 });
 
 $app->log->info($req->getResourceUri () . ' connect from : ' . $req->getHost() . ' Event type:' . $eventType);
@@ -44,7 +58,36 @@ $app->run();
 
 function processPushHook($app)
 {
-    $app->log->info('process Push Hook');
+    $app->log->info('processPushHook');
+    $app->response->setStatus(200);
+}
+
+function processTagHook($app)
+{
+    $app->log->info('processTagHook');
+    $app->response->setStatus(501);
+    $app->response->setBody('Not Yet Implemented.');
+}
+
+function processIssueHook($app)
+{
+    $app->log->info('processIssueHook');
+    $app->response->setStatus(501);
+    $app->response->setBody('Not Yet Implemented.');
+}
+
+function processCommentHook($app)
+{
+    $app->log->info('processCommentHook');
+    $app->response->setStatus(501);
+    $app->response->setBody('Not Yet Implemented.');
+}
+
+function processMergeReqHook($app)
+{
+    $app->log->info('processMergeReqHook');
+    $app->response->setStatus(501);
+    $app->response->setBody('Not Yet Implemented.');
 }
 
 ?>
