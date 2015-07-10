@@ -27,10 +27,10 @@ class GitlabController extends BaseController
      * @return Response
      */
     public function hookHandler(Request $request)
-    {
-        dump($request->json()); 
-
-        $eventType = $request->headers->get('X-Gitlab-Event');
+    {     
+        $eventType = $request->headers->get('X-Gitlab-Event') ;
+        if (is_null($eventType))
+            $eventType = 'Push Hook';
         
         Log::info('eventType : ' . $eventType);
 
