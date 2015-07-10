@@ -1,6 +1,6 @@
 # GitLab JIRA Integration
 
-## What
+## What is it?
 * [JIRA DVCS Connector Plugin](https://marketplace.atlassian.com/plugins/com.atlassian.jira.plugins.jira-bitbucket-connector-plugin) does not support gitlab.
 * [GitLab Community Edition](http://doc.gitlab.com/ee/integration/jira.html) does not support Advanced JIRA Integration(EE only feature).
 
@@ -19,12 +19,22 @@ If you have questions contact to me or open an issue on GitHub.
 
 ## Installation
 
-Install Composer
-```
-$ composer require lesstif/gitlab-jira-integration dev-master
+1. Download and Install PHP Composer.
+``` sh
+curl -sS https://getcomposer.org/installer | php
 ```
 
-copy .env.example file to `.env` in the root of your project.
+2. clonning github project
+```sh
+$ git clone https://github.com/lesstif/gitlab-jira-integration.git
+``` 
+
+3. Run the composer install command.
+```sh
+$ composer install
+```
+
+4. Next, copy .env.example file to `.env` in the root of your project.
 ```sh
 $ cp .env.example .env
 ```
