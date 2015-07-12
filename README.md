@@ -97,7 +97,7 @@ php artisan serve --host 0.0.0.0 --port 9000
 ### gitlab configuration
 - Choose  > **Project Settings** -> **Web Hooks**.
 - Setting URL to your gitlab-jira integration's running Host. (eg: **http://my-host.com:9000/gitlab/hook**)
-![gitlab configuration.](https://cloud.githubusercontent.com/assets/404534/8201559/34dc5004-150d-11e5-9baf-6d7226cd8b84.png)
+![gitlab configuration.](https://cloud.githubusercontent.com/assets/404534/8638183/7f7951c2-28ed-11e5-987f-5258f1bc2bec.png)
 
 **Tip:**  If you decide to change the hook receiving URI from the default, Open the app/Http/routes.php file in a text editor and find this line:
 ```php
