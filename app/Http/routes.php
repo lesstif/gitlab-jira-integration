@@ -15,4 +15,10 @@ $app->get('/', function () use ($app) {
     return $app->welcome();
 });
 
-$app->post('gitlab', 'GitlabController@hookHandler');
+$app->post('gitlab/hook', [
+	'as' => 'hook', 'uses' => 'GitlabController@hookHandler'
+]);
+
+$app->get('gitlab/user', [
+    'as' => 'user', 'uses' => 'UserController@createUserList'
+]);

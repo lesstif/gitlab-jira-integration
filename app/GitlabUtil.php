@@ -19,16 +19,29 @@ class GitlabUtil
         $users = $this->loadGitLabUser();
 
         dd($users);
-
+        
         $u = $users->{$id};
         if ( is_null($u))
         {
-            Log::info("user($id) not found:");
+            Log::debug("user($id) not found: fetching..");
+            // get user info
+            $u = getUser($id);
         } else {
             return $u;
         }
     }
     
+    /**
+     * get a single user.
+     * @param type $id gitlab userid(int)
+     * @return type
+     */
+    public function getUser($id)
+    {
+        $client = new HttpClient();
+        $client->getUser($id);
+    }
+
     /**
       * Description
       * @return type
@@ -63,14 +76,13 @@ class GitlabUtil
         {        
             $users[$u->id] = [
                 'name' => $u->name,
+                // username is same jira user id
                 'username' => $u->username,
                 'state' => $u->state,
                 ];
         }
-        $filesystem = new \League\Flysystem\Filesystem(
-            new \League\Flysystem\Adapter\Local(storage_path())
-            );
-        $filesystem->put(USER_LIST, json_encode($users, JSON_PRETTY_PRINT));
+
+        \Storage::put(USER_LIST, json_encode($users, JSON_PRETTY_PRINT));
         return $users;
     }
     
@@ -81,12 +93,9 @@ class GitlabUtil
      */
     public function loadGitLabUser()
     {
-        $filesystem = new \League\Flysystem\Filesystem(
-            new \League\Flysystem\Adapter\Local(storage_path())
-            );
-        if ($filesystem->has(USER_LIST))
+        if (\Storage::has(USER_LIST))
         {
-            $users = $filesystem->read(USER_LIST);
+            $users = \Storage::read(USER_LIST);
             return json_decode($users);
         }
        

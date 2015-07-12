@@ -28,10 +28,16 @@ class GitlabController extends BaseController
      */
     public function hookHandler(Request $request)
     {     
+        Log::debug('hook received from ' . $request->header('X-Forwarded-For'));
+
         $eventType = $request->headers->get('X-Gitlab-Event') ;
         if (is_null($eventType))
             $eventType = 'Push Hook';
         
+         // for debugging purpose.
+        \Storage::put(str_replace(' ', '-', $eventType) . ".json", 
+            json_encode($request->json()->all(), JSON_PRETTY_PRINT));
+
         Log::info('eventType : ' . $eventType);
 
         if ($eventType == 'Push Hook')
@@ -70,6 +76,7 @@ class GitlabController extends BaseController
             $issueKey = $this->extractIssueKey($commit['message']);
             if (empty($issueKey))
                 continue;
+
             $transitionName = $this->needTransition($commit['message'], $message);
             try {
                 if (empty($transitionName))
