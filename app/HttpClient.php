@@ -17,8 +17,8 @@ class HttpClient
 
 		$dotenv = \Dotenv::load($path);
 
-        $gitHost  = str_replace("\"", "", getenv('GITLAB_HOST'));
-        $gitToken = str_replace("\"", "", getenv('GITLAB_TOKEN'));
+        $this->gitHost  = str_replace("\"", "", getenv('GITLAB_HOST'));
+        $this->gitToken = str_replace("\"", "", getenv('GITLAB_TOKEN'));
 	}
 
 	public function getUser($id)
@@ -50,7 +50,7 @@ class HttpClient
             'verify' => false,
             ]);
 
-        $response = $client->get($gitHost . '/api/v3/' . $uri, [
+        $response = $client->get($this->gitHost . '/api/v3/' . $uri, [
             'query' => [
                 'private_token' => $this->gitToken,
                 'per_page' => 10000
