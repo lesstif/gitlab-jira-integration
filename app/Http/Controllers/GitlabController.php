@@ -81,7 +81,7 @@ class GitlabController extends BaseController
                     $body = sprintf($message, $user->username, $commit['url']);
                     $comment->setBody($body);
                     
-                    $issueService = new IssueService();
+                    $issueService = new IssueService(base_path());
                     $ret = $issueService->addComment($issueKey, $comment);
                 } else //need issue transition
                 {
@@ -89,7 +89,7 @@ class GitlabController extends BaseController
                     $transition->setTransitionName($transitionName);
                     $body = sprintf($message, $user['username'], $transitionName, $commit['url']);
                     $transition->setCommentBody($body);
-                    $issueService = new IssueService();
+                    $issueService = new IssueService(base_path());
                     $issueService->transition($issueKey, $transition);
                 }
                 
@@ -97,8 +97,10 @@ class GitlabController extends BaseController
                  Log::error("add Comment Failed : " . $e->getMessage());
             }
         }    
-        $app->response->setStatus(200);
-        return ['created' => true];
+
+        return response()->json([
+            'result' => 'Ok'
+            ]);
     }
 
     private function needTransition($subject, &$message)
