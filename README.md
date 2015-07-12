@@ -13,6 +13,7 @@ If you have questions contact to me or open an issue on GitHub.
 ## Requirements
 
 - PHP > 5.4
+- Lumen framework > 5.0
 - [php-jira-rest-client](https://github.com/lesstif/php-jira-rest-client)
 - Atlassian JIRA 6 or above 
 - Gitlab CE 6 or above
@@ -24,7 +25,7 @@ If you have questions contact to me or open an issue on GitHub.
 curl -sS https://getcomposer.org/installer | php
 ```
 
-2. clonning github project
+2. clonning gitlab-jira-intergration project
 ```sh
 $ git clone https://github.com/lesstif/gitlab-jira-integration.git
 ``` 
@@ -34,12 +35,7 @@ $ git clone https://github.com/lesstif/gitlab-jira-integration.git
 $ composer install
 ```
 
-4. Next, copy .env.example file to `.env` in the root of your project.
-```sh
-$ cp .env.example .env
-```
-
-You would first define a Jira and Gitlab connection into `.env` configuration.
+4. Now you need define your a Jira and Gitlab connection info into `.env` configuration.
 ```
 JIRA_HOST="https://your-jira.host.com"
 JIRA_USER="jira-username"
@@ -53,7 +49,7 @@ GITLAB_TOKEN="gitlab-private-token-for-api"
 - Here, You can find your private token.
 ![Private Token](https://cloud.githubusercontent.com/assets/404534/8210509/555cf47e-154d-11e5-83da-84f6f96b4fae.png)
 
-Next, copy config.integration.example.json to `config.integration.json` in the root of your project.
+Next, copy config.integration.example.json to `config.integration.json`.
 ```sh
 $ cp config.integration.example.json config.integration.json
 ```
@@ -84,19 +80,32 @@ Here is the default configuration, for interact with Jira.
 }
 ````
 
+#### transition
+- **message** : "[~%s] issue %s with %s" : Converted to "**User** Issue **Resolved** with **Commit URL**"
+- **keywords**: if commit message had second element(eg: resolve or fix),then issue status transition to first element.(eg : Resolved)
+
+
 ## Usage 
 
 Run PHP standalone web server on the gitlab-jira integration server. (eg: my-host.com).
 ```
-php -S 0.0.0.0:9000
+php artisan serve --host 0.0.0.0 --port 9000
 ```
 
 ## Configuration
 
 ### gitlab configuration
 - Choose  > **Project Settings** -> **Web Hooks**.
-- Setting URL to your gitlab-jira integration's running Host. (eg: **http://my-host.com:9000/gitlab**)
+- Setting URL to your gitlab-jira integration's running Host. (eg: **http://my-host.com:9000/gitlab/hook**)
 ![gitlab configuration.](https://cloud.githubusercontent.com/assets/404534/8201559/34dc5004-150d-11e5-9baf-6d7226cd8b84.png)
+
+**Tip:**  If you decide to change the hook receiving URI from the default, Open the app/Http/routes.php file in a text editor and find this line:
+```php
+$app->post('gitlab/hook',[
+	'as' => 'hook', 'uses' => 'GitlabController@hookHandler'
+]);
+```
+change to 'gitlab/hook' to desired the URI (eg: 'gitlab/my-hook-receiver')
 
 ### Referencing JIRA isssues
 - git commit with JIRA Issue Key(eg. TEST-123 or test-123)
@@ -116,4 +125,3 @@ Apache V2 License
 * [JIRA 6.2 REST API documentation](https://docs.atlassian.com/jira/REST/6.2/)
 * [GitLab-EE Jira integration](http://doc.gitlab.com/ee/integration/jira.html)
 * [Processing JIRA issues with commit messages](https://confluence.atlassian.com/display/Cloud/Processing+JIRA+issues+with+commit+messages)
-
