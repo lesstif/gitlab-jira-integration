@@ -4,22 +4,15 @@ namespace App\Http\Controllers;
 
 use Log;
 
-use App\GitlabUtil;
-
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 
 use JiraRestApi\Issue\IssueService;
 use JiraRestApi\Issue\Comment;
+use JiraRestApi\Issue\Transition;
 
 class GitlabController extends BaseController
 {
-    private $gitlab;
-
-    public function __construct() {
-       $this->gitlab = new GitlabUtil;
-    }
-
     /**
      * process request from gitlab webhook.
      *
@@ -64,10 +57,13 @@ class GitlabController extends BaseController
 
     private function pushHook(Request $request)
     {
+        $userController = new UserController();
+
         $hook = $request->json();
 
-        //dd($hook->get('commits'));
-        $u = $this->gitlab->getGitUserName(2);
+        // call UserController's method using IoC.
+        $user = \App::make('App\Http\Controllers\UserController')
+            ->{'getGitUser'}($hook->get('user_id'));
 
         foreach($hook->get('commits') as $commit)
         {
@@ -82,7 +78,7 @@ class GitlabController extends BaseController
                 if (empty($transitionName))
                 {
                     $comment = new Comment();
-                    $body = sprintf($message, $u->username, $commit['url']);
+                    $body = sprintf($message, $user->username, $commit['url']);
                     $comment->setBody($body);
                     
                     $issueService = new IssueService();
@@ -91,7 +87,7 @@ class GitlabController extends BaseController
                 {
                     $transition = new Transition();
                     $transition->setTransitionName($transitionName);
-                    $body = sprintf($message, $u->username, $transitionName, $commit['url']);
+                    $body = sprintf($message, $user['username'], $transitionName, $commit['url']);
                     $transition->setCommentBody($body);
                     $issueService = new IssueService();
                     $issueService->transition($issueKey, $transition);
@@ -110,6 +106,7 @@ class GitlabController extends BaseController
         //$filesystem = new \League\Flysystem\Filesystem(new \League\Flysystem\Adapter\Local(__DIR__));
         $string = file_get_contents(base_path() . DIRECTORY_SEPARATOR  . 'config.integration.json');
         $config = json_decode($string);
+        dump($config);
         foreach($config->transition->keywords as $key)
         {
             $cnt = preg_match_all($key[1],  $subject, $matches);
