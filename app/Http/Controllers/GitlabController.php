@@ -78,7 +78,7 @@ class GitlabController extends BaseController
                 if (empty($transitionName))
                 {
                     $comment = new Comment();
-                    $body = sprintf($message, $user->username, $commit['url']);
+                    $body = sprintf($message, $user['username'], $commit['url']);
                     $comment->setBody($body);
                     
                     $issueService = new IssueService(base_path());

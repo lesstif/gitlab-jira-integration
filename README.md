@@ -21,28 +21,28 @@ If you have questions contact to me or open an issue on GitHub.
 ## Installation
 
 1. Download and Install PHP Composer.
-``` sh
-curl -sS https://getcomposer.org/installer | php
-```
+	``` sh
+	curl -sS https://getcomposer.org/installer | php
+	```
 
 2. clonning gitlab-jira-intergration project
-```sh
-$ git clone https://github.com/lesstif/gitlab-jira-integration.git
-``` 
+	```sh
+	$ git clone https://github.com/lesstif/gitlab-jira-integration.git
+	``` 
 
 3. Run the composer install command.
-```sh
-$ composer install
-```
+	```sh
+	$ composer install
+	```
 
 4. Now you need define your a Jira and Gitlab connection info into `.env` configuration.
-```
-JIRA_HOST="https://your-jira.host.com"
-JIRA_USER="jira-username"
-JIRA_PASS="jira-password"
-GITLAB_HOST="https://your-gitlab.host.com"
-GITLAB_TOKEN="gitlab-private-token-for-api"
-```
+	```
+	JIRA_HOST="https://your-jira.host.com"
+	JIRA_USER="jira-username"
+	JIRA_PASS="jira-password"
+	GITLAB_HOST="https://your-gitlab.host.com"
+	GITLAB_TOKEN="gitlab-private-token-for-api"
+	```
 **Tip:**  In the following steps, you will generate your private token for API.
 - login gitlab and click on **Profile Settings**
 - Click on **Account**
@@ -50,9 +50,9 @@ GITLAB_TOKEN="gitlab-private-token-for-api"
 ![Private Token](https://cloud.githubusercontent.com/assets/404534/8210509/555cf47e-154d-11e5-83da-84f6f96b4fae.png)
 
 Next, copy config.integration.example.json to `config.integration.json`.
-```sh
-$ cp config.integration.example.json config.integration.json
-```
+	```sh
+	$ cp config.integration.example.json config.integration.json
+	```
 
 Here is the default configuration, for interact with Jira.
 ````json
