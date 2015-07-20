@@ -65,13 +65,28 @@ class GitlabController extends BaseController
         $user = \App::make('App\Http\Controllers\UserController')
             ->{'getGitUser'}($hook->get('user_id'));
 
-        foreach($hook->get('commits') as $commit)
+        $commits = $hook->get('commits');
+        
+        // empty commit logs. stop processing.
+        if (is_null($commits) || count($commits) == 0) {
+            Log::info("Empty commit logs. " . json_encode($hook->all(), JSON_PRETTY_PRINT));
+            
+            return response()->json([
+                'result' => 'Ok',
+                'issue_count' => 0
+            ]);
+        }
+
+        $issueCount = 0;
+        foreach($commits as $commit)
         {
             Log::debug('Commit : ' . json_encode($commit, JSON_PRETTY_PRINT));
             
             $issueKey = $this->extractIssueKey($commit['message']);
             if (empty($issueKey))
                 continue;
+
+            $issueCount++;
 
             $transitionName = $this->needTransition($commit['message'], $message);
             try {
@@ -99,7 +114,8 @@ class GitlabController extends BaseController
         }    
 
         return response()->json([
-            'result' => 'Ok'
+            'result' => 'Ok',
+            'issue_count' => $issueCount
             ]);
     }
 
@@ -108,7 +124,7 @@ class GitlabController extends BaseController
         //$filesystem = new \League\Flysystem\Filesystem(new \League\Flysystem\Adapter\Local(__DIR__));
         $string = file_get_contents(base_path() . DIRECTORY_SEPARATOR  . 'config.integration.json');
         $config = json_decode($string);
-        dump($config);
+        
         foreach($config->transition->keywords as $key)
         {
             $cnt = preg_match_all($key[1],  $subject, $matches);
