@@ -12,10 +12,10 @@ If you have questions contact to me or open an issue on GitHub.
 
 ## Requirements
 
-- PHP > 5.4
-- Lumen framework > 5.0
+- PHP >= 5.5.9
+- Lumen framework >= 5.1
 - [php-jira-rest-client](https://github.com/lesstif/php-jira-rest-client)
-- Atlassian JIRA 6 or above 
+- Atlassian JIRA 6 or above
 - Gitlab CE 6 or above
 
 ## Installation
@@ -28,7 +28,7 @@ If you have questions contact to me or open an issue on GitHub.
 2. clonning gitlab-jira-intergration project
 	```sh
 	$ git clone https://github.com/lesstif/gitlab-jira-integration.git
-	``` 
+	```
 
 3. Run the composer install command.
 	```sh
@@ -43,6 +43,7 @@ If you have questions contact to me or open an issue on GitHub.
 	GITLAB_HOST="https://your-gitlab.host.com"
 	GITLAB_TOKEN="gitlab-private-token-for-api"
 	```
+
 **Tip:**  In the following steps, you will generate your private token for API.
 - login gitlab and click on **Profile Settings**
 - Click on **Account**
@@ -85,7 +86,7 @@ Here is the default configuration, for interact with Jira.
 - **keywords**: if commit message had second element(eg: resolve or fix),then issue status transition to first element.(eg : Resolved)
 
 
-## Usage 
+## Usage
 
 Run PHP standalone web server on the gitlab-jira integration server. (eg: my-host.com).
 ```
@@ -113,7 +114,7 @@ change to 'gitlab/hook' to desired the URI (eg: 'gitlab/my-hook-receiver')
 
 ### Resolving or Closing JIRA isssues
 - git commit with JIRA Issue Key and trigger keywords(eg. 'Closed TEST-123' or 'fix test-123')
-- Gitlab-Jira-Integrator will automatically add a comment and closing(or fixing) directly in specific JIRA Issue by using trigger keywords(setting in config.integration.json) in commit message. 
+- Gitlab-Jira-Integrator will automatically add a comment and closing(or fixing) directly in specific JIRA Issue by using trigger keywords(setting in config.integration.json) in commit message.
 
 
 # License
