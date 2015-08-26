@@ -28,7 +28,7 @@ class HttpClient
 
 	/**
 	 * fetch users list from gitlab.
-	 * 
+	 *
 	 * @return type
 	 */
 	public function getAllUsers()
@@ -38,15 +38,15 @@ class HttpClient
 
 	/**
 	 * performing gitlab api request
-	 * 
+	 *
 	 * @param $uri API uri
 	 * @return type json response
 	 */
 	public function request($uri)
 	{
 		$client = new \GuzzleHttp\Client([
-            'base_uri' => $this->gitHost, 
-            'timeout'  => 10.0, 
+            'base_uri' => $this->gitHost,
+            'timeout'  => 10.0,
             'verify' => false,
             ]);
 
@@ -59,10 +59,10 @@ class HttpClient
 
         if ($response->getStatusCode() != 200)
         {
-        	throw GitlabException("Http request failed. status code : " 
-        		. $response->getStatusCode() . " reason:" . $response->getReasonPhrase());        
+        	throw GitlabException("Http request failed. status code : "
+        		. $response->getStatusCode() . " reason:" . $response->getReasonPhrase());
         }
 
         return json_decode($response->getBody());
-	}       
+	}
 }

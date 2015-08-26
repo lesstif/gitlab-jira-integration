@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use JiraRestApi\Issue\IssueService;
 use JiraRestApi\Issue\Comment;
 use JiraRestApi\Issue\Transition;
+use JiraRestApi\Configuration\DotEnvConfiguration;
 
 class GitlabController extends BaseController
 {
@@ -20,15 +21,15 @@ class GitlabController extends BaseController
      * @return Response
      */
     public function hookHandler(Request $request)
-    {     
+    {
         Log::debug('hook received from ' . $request->header('X-Forwarded-For'));
 
         $eventType = $request->headers->get('X-Gitlab-Event') ;
         if (is_null($eventType))
             $eventType = 'Push Hook';
-        
+
          // for debugging purpose.
-        \Storage::put(str_replace(' ', '-', $eventType) . ".json", 
+        \Storage::put(str_replace(' ', '-', $eventType) . ".json",
             json_encode($request->json()->all(), JSON_PRETTY_PRINT));
 
         Log::info('eventType : ' . $eventType);
@@ -51,8 +52,8 @@ class GitlabController extends BaseController
         elseif ($eventType == 'Merge Request Hook'){
             return $this->mergeRequestHook($request);
         }
-        
-        abort(500, 'Unknown Hook type : ' . $eventType);         
+
+        abort(500, 'Unknown Hook type : ' . $eventType);
     }
 
     private function pushHook(Request $request)
@@ -66,11 +67,11 @@ class GitlabController extends BaseController
             ->{'getGitUser'}($hook->get('user_id'));
 
         $commits = $hook->get('commits');
-        
+
         // empty commit logs. stop processing.
         if (is_null($commits) || count($commits) == 0) {
             Log::info("Empty commit logs. " . json_encode($hook->all(), JSON_PRETTY_PRINT));
-            
+
             return response()->json([
                 'result' => 'Ok',
                 'issue_count' => 0
@@ -81,7 +82,7 @@ class GitlabController extends BaseController
         foreach($commits as $commit)
         {
             Log::debug('Commit : ' . json_encode($commit, JSON_PRETTY_PRINT));
-            
+
             $issueKey = $this->extractIssueKey($commit['message']);
             if (empty($issueKey))
                 continue;
@@ -95,8 +96,8 @@ class GitlabController extends BaseController
                     $comment = new Comment();
                     $body = sprintf($message, $user['username'], $commit['url']);
                     $comment->setBody($body);
-                    
-                    $issueService = new IssueService(base_path());
+
+                    $issueService = new IssueService(new DotEnvConfiguration(base_path()));
                     $ret = $issueService->addComment($issueKey, $comment);
                 } else //need issue transition
                 {
@@ -104,14 +105,14 @@ class GitlabController extends BaseController
                     $transition->setTransitionName($transitionName);
                     $body = sprintf($message, $user['username'], $transitionName, $commit['url']);
                     $transition->setCommentBody($body);
-                    $issueService = new IssueService(base_path());
+                    $issueService = new IssueService(new DotEnvConfiguration(base_path()));
                     $issueService->transition($issueKey, $transition);
                 }
-                
+
             } catch (JIRAException $e) {
                  Log::error("add Comment Failed : " . $e->getMessage());
             }
-        }    
+        }
 
         return response()->json([
             'result' => 'Ok',
@@ -124,7 +125,7 @@ class GitlabController extends BaseController
         //$filesystem = new \League\Flysystem\Filesystem(new \League\Flysystem\Adapter\Local(__DIR__));
         $string = file_get_contents(base_path() . DIRECTORY_SEPARATOR  . 'config.integration.json');
         $config = json_decode($string);
-        
+
         foreach($config->transition->keywords as $key)
         {
             $cnt = preg_match_all($key[1],  $subject, $matches);
@@ -150,23 +151,23 @@ class GitlabController extends BaseController
     }
 
     private function tagHook(Request $req)
-    {        
-        abort(500, 'Not Yet Implemented.');  
+    {
+        abort(500, 'Not Yet Implemented.');
     }
 
     private function issueHook(Request $req)
     {
-        abort(500, 'Not Yet Implemented.');  
+        abort(500, 'Not Yet Implemented.');
     }
 
     private function noteHook(Request $req)
     {
-         abort(500, 'Not Yet Implemented.');  
+         abort(500, 'Not Yet Implemented.');
     }
 
     private function mergeReqHook(Request $req)
     {
-       abort(500, 'Not Yet Implemented.');  
+       abort(500, 'Not Yet Implemented.');
     }
 
 

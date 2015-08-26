@@ -51,9 +51,10 @@ If you have questions contact to me or open an issue on GitHub.
 ![Private Token](https://cloud.githubusercontent.com/assets/404534/8210509/555cf47e-154d-11e5-83da-84f6f96b4fae.png)
 
 Next, copy config.integration.example.json to `config.integration.json`.
-	```sh
-	$ cp config.integration.example.json config.integration.json
-	```
+
+```sh
+$ cp config.integration.example.json config.integration.json
+```
 
 Here is the default configuration, for interact with Jira.
 ````json
@@ -108,6 +109,25 @@ $app->post('gitlab/hook',[
 ```
 change to 'gitlab/hook' to desired the URI (eg: 'gitlab/my-hook-receiver')
 
+## Checking Installation  
+1.  To get started, let's running a curl command on your command line.
+
+	```sh
+	curl http://myhost.com:9000/gitlab/user/list
+	```
+You can see response json data including gitlab user list and created user list file to 'storage/app/users.json'.
+	```json
+{
+    "1234": {
+        "name": "KwangSeob Jeong",
+        "username": "lesstif",
+        "state": "active"
+    }
+}
+	 ```
+
+## Usage
+
 ### Referencing JIRA isssues
 - git commit with JIRA Issue Key(eg. TEST-123 or test-123)
 - Gitlab-Jira-Integrator will automatically add a comment in specific JIRA Issue.
@@ -115,6 +135,9 @@ change to 'gitlab/hook' to desired the URI (eg: 'gitlab/my-hook-receiver')
 ### Resolving or Closing JIRA isssues
 - git commit with JIRA Issue Key and trigger keywords(eg. 'Closed TEST-123' or 'fix test-123')
 - Gitlab-Jira-Integrator will automatically add a comment and closing(or fixing) directly in specific JIRA Issue by using trigger keywords(setting in config.integration.json) in commit message.
+
+### Issue Time Tracking
+not yet implemented.
 
 
 # License

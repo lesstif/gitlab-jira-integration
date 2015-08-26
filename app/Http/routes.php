@@ -19,10 +19,14 @@ $app->post('gitlab/hook', [
 	'as' => 'hook', 'uses' => 'GitlabController@hookHandler'
 ]);
 
-$app->get('gitlab/user/{id}', [
-    'as' => 'get-user', 'uses' => 'UserController@getGitUser'
+// lumen route doesn't have any() method
+$app->post('gitlab/user/list', [
+    'as' => 'create-user', 'uses' => 'UserController@createUserList'
+]);
+$app->get('gitlab/user/list', [
+    'as' => 'create-user', 'uses' => 'UserController@createUserList'
 ]);
 
-$app->post('gitlab/user/create', [
-    'as' => 'create-user', 'uses' => 'UserController@createUserList'
+$app->get('gitlab/user/view/{id}', [
+    'as' => 'get-user', 'uses' => 'UserController@getGitUser'
 ]);

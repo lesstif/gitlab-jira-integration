@@ -12,7 +12,7 @@ use App\HttpClient;
 
 /**
  * process gitlab user API.
- * 
+ *
  * @package default
  */
 class UserController extends BaseController
@@ -21,15 +21,15 @@ class UserController extends BaseController
 
 	/**
      * get gitlab username (aka 'lesstif') by id(int: 1)
-     * 
-     * @param type $id 
+     *
+     * @param type $id
      * @return type
      */
     public function getGitUser($id)
     {
         $users = $this->loadGitLabUser();
 
-        //dd($users);        
+        //dd($users);
         $u = array_get($users, $id);
         if ( is_null($u))
         {
@@ -40,7 +40,7 @@ class UserController extends BaseController
 
         return $u;
     }
-    
+
     /**
      * get a single user.
      * @param type $id gitlab userid(int)
@@ -59,7 +59,7 @@ class UserController extends BaseController
         	];
 
         $users = $this->loadGitLabUser();
-       
+
         $users = array_add($users, $id, $user);
 
         \Storage::put($this->userList, json_encode($users, JSON_PRETTY_PRINT));
@@ -69,13 +69,13 @@ class UserController extends BaseController
     //
     public function createUserList()
     {
-         // fetch users list from gitlab and create file.
+        // fetch users list from gitlab and create file.
     	$client = new HttpClient();
         $body = $client->getAllUsers();
 
         $users = [] ;
         foreach($body as $u)
-        {        
+        {
             $users[$u->id] = [
                 'name' => $u->name,
                 // username is same jira user id
@@ -90,7 +90,7 @@ class UserController extends BaseController
 
     /**
      * load gitlab user data from file.
-     * 
+     *
      * @return type user list(json encoding)
      */
     public function loadGitLabUser()
@@ -100,7 +100,7 @@ class UserController extends BaseController
             $users = \Storage::read($this->userList);
             return json_decode($users, true);
         }
-       
+
         // if file not exist, create empty list.
         return [];
     }

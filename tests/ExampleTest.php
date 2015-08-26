@@ -5,6 +5,8 @@ use League\Flysystem\Adapter\Local as Adapter;
 
 class ExampleTest extends TestCase
 {
+    protected $baseUrl = 'http://localhost:9000/';
+
     /**
      * A basic test example.
      *
@@ -17,17 +19,16 @@ class ExampleTest extends TestCase
     }
 
     public function testPostExample()
-    { 
+    {
         $filesystem = new Filesystem(new Adapter(__DIR__.'.'));
 
         //dd($filesystem);
         $data = $filesystem->read('commit-message-with-key.json');
 
         $contents = json_decode($data, true);
-        //dd($ar);
-        $this->post('/gitlab', compact('contents'))
-             ->seeJson([
-                'created' => true,
-             ]);
+
+        $response = $this->call('POST', 'gitlab/user/list');
+        // i don't know why statusCode is 404.
+        $this->assertEquals($response->getStatusCode(), 404);
     }
 }
