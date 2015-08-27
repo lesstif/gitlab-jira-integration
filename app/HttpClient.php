@@ -65,4 +65,47 @@ class HttpClient
 
         return json_decode($response->getBody());
 	}
+
+	/**
+	 * get All gitlab projects
+	 * 
+	 * @return [type] [description]
+	 */
+	public function getAllProjects()
+	{
+		return $this->request('projects/all');
+	}
+
+	/**
+	 * performing gitlab api request
+	 *
+	 * @param $uri API uri
+	 * @param $data body data
+	 * 
+	 * @return type json response
+	 */
+	public function post($uri, $data)
+	{
+		$client = new \GuzzleHttp\Client([
+            'base_uri' => $this->gitHost,
+            'timeout'  => 10.0,
+            'verify' => false,
+            ]);
+		
+		$body = ['body' => $data, 'headers' => [
+			'"PRIVATE-TOKEN' => $this->gitToken
+			]
+		];
+
+		$response = $client->post($this->gitHost . '/api/v3/' . $uri, $body);
+
+        if ($response->getStatusCode() != 200)
+        {
+        	throw GitlabException("Http request failed. status code : "
+        		. $response->getStatusCode() . " reason:" . $response->getReasonPhrase());
+        }
+
+        return json_decode($response->getBody());
+	}
+
 }

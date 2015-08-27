@@ -30,3 +30,17 @@ $app->get('gitlab/user/list', [
 $app->get('gitlab/user/view/{id}', [
     'as' => 'get-user', 'uses' => 'UserController@getGitUser'
 ]);
+
+// get a list of projects which are owned by the auth user.
+$app->get('gitlab/projects/owned', [
+    'as' => 'get-owned-project', 'uses' => 'ProjectController@ownedProjects'
+]);
+
+// get all project in gitlab. ! admin only
+$app->get('gitlab/projects/all', [
+    'as' => 'get-all-project', 'uses' => 'ProjectController@allProjects'
+]);
+
+$app->post('gitlab/projects/add-hook', [
+    'as' => 'add-project-hook', 'uses' => 'ProjectController@addOrEditProjectHooks'
+]);
