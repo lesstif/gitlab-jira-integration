@@ -10,6 +10,9 @@ class HttpClient
 	private $gitHost;
 	private $gitToken;
 
+	private $hookUrl;
+	private $debug = false;
+
 	public function __construct($path = null)
 	{
 		if (empty($path))
@@ -19,6 +22,13 @@ class HttpClient
 
         $this->gitHost  = str_replace("\"", "", getenv('GITLAB_HOST'));
         $this->gitToken = str_replace("\"", "", getenv('GITLAB_TOKEN'));
+
+        $this->hookUrl = str_replace("\"", "", getenv('HOOK_URL'));
+
+        $bool = str_replace("\"", "", getenv('APP_DEBUG'));
+
+        if (strtolower($bool) === 'true')
+        	$this->debug = true;        
 	}
 
 	public function getUser($id)
@@ -80,11 +90,11 @@ class HttpClient
 	 * performing gitlab api request
 	 *
 	 * @param $uri API uri
-	 * @param $data body data
+	 * @param $body body data
 	 * 
 	 * @return type json response
 	 */
-	public function post($uri, $data)
+	public function post($uri, $body)
 	{
 		$client = new \GuzzleHttp\Client([
             'base_uri' => $this->gitHost,
@@ -92,16 +102,27 @@ class HttpClient
             'verify' => false,
             ]);
 		
-		$body = ['body' => $data, 'headers' => [
-			'"PRIVATE-TOKEN' => $this->gitToken
-			]
-		];
+		$postData['headers'] = ['PRIVATE-TOKEN' => $this->gitToken];
 
-		$response = $client->post($this->gitHost . '/api/v3/' . $uri, $body);
+		$postData['json'] = $body;
 
-        if ($response->getStatusCode() != 200)
+		if ($this->debug) {
+			$postData['debug'] = fopen(base_path() . '/' . 'debug.txt', 'w');
+		}		
+
+		try{
+			$response = $client->post($this->gitHost . '/api/v3/' . $uri, $postData);
+		} catch (GuzzleHttp\Exception\ClientException $e) {
+			dump($response);
+		    echo $e->getRequest();
+		    if ($e->hasResponse()) {
+		        echo $e->getResponse();
+		    }
+		} 
+
+        if ($response->getStatusCode() != 200 && $response->getStatusCode() != 201)
         {
-        	throw GitlabException("Http request failed. status code : "
+        	throw new JiraIntegrationException("Http request failed. status code : "
         		. $response->getStatusCode() . " reason:" . $response->getReasonPhrase());
         }
 

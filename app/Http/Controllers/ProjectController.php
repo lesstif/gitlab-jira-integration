@@ -41,34 +41,60 @@ class ProjectController extends BaseController
         return $projects;
     }
 
+    public function viewProject($id)
+    {
+        $client = new HttpClient();
+        $project = $client->request('projects/' . $id);
+
+        dump($project);
+        return json_encode($project, JSON_PRETTY_PRINT);
+    }
+
     /**
      * add or edit project hook settings
-     * @param [integer] $projectId gitlab project id
-     * @param [string] $hookUrl hookUrl (required) - The hook URL
-     * @param [array] $[events] push_events - Trigger hook on push events, (default: true)
-     *                          issues_events - Trigger hook on issues events(default: false), 
-     *                          merge_requests_events - Trigger hook on merge_requests events (default: true)
-     *                          tag_push_events - Trigger hook on push_tag events, (default: false)
+     * @param [Request] $request HTTP Request
      *
      * @link(http://doc.gitlab.com/ce/api/projects.html#add-project-hook, link)
      */
     public function addOrEditProjectHooks(Request $request)
     {
-        $project = $request->json();       
+        $project = $request->json();
 
         $gitUrl = sprintf('projects/%d/hooks', $project->get('project_id'));
 
-        $data = ['url'  => $project->get('url')];
+        $hooks = $this->projectHooks($project->get('project_id'));
+        foreach ($hooks as $hook) {
+            # already registed...
+            if ($hook->url === $project->get('url')) {
+                continue;
+            }
+        }
 
-        $data['push_events'] = $project->get('push_events') ?: true;
-        $data['issues_events'] = $project->get('issues_events') ?: false;
-        $data['merge_requests_events'] = $project->get('merge_requests_events') ?: true;
-        $data['tag_push_events'] = $project->get('tag_push_events') ?: false;
+        $json['url'] = $project->get('url');
+       
+        $json['push_events'] = $project->get('push_events') ?: true;
+        $json['issues_events'] = $project->get('issues_events') ?: false;
+        $json['merge_requests_events'] = $project->get('merge_requests_events') ?: true;
+        $json['tag_push_events'] = $project->get('tag_push_events') ?: false;
 
         $client = new HttpClient();
 
-        $response = $client->post($gitUrl, $data);
+        $response = $client->post($gitUrl, $json);
 
-        dump($response);        
+        return json_encode($response, JSON_PRETTY_PRINT);
     }
+
+    /**
+     * get all project hooks
+     * @param  [integer] $id project id
+     * @return [type]     [description]
+     */
+    public function projectHooks($id)
+    {
+        $client = new HttpClient();
+
+        $response = $client->request('projects/' . $id . '/hooks');
+        return $response;
+    }
+
 }

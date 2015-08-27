@@ -36,9 +36,18 @@ $app->get('gitlab/projects/owned', [
     'as' => 'get-owned-project', 'uses' => 'ProjectController@ownedProjects'
 ]);
 
+$app->get('gitlab/projects/view/{id}', [
+    'as' => 'view-project', 'uses' => 'ProjectController@viewProject'
+]);
+
 // get all project in gitlab. ! admin only
 $app->get('gitlab/projects/all', [
     'as' => 'get-all-project', 'uses' => 'ProjectController@allProjects'
+]);
+
+// Get a list of project hooks.
+$app->get('gitlab/projects/hook/{id}', [
+    'as' => 'get-project-hooks', 'uses' => 'ProjectController@projectHooks'
 ]);
 
 $app->post('gitlab/projects/add-hook', [
