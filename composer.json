@@ -4,7 +4,7 @@
     "type": "project",
     "keywords": ["jira", "gitlab", "gitlab-ce", "jira-gitlab", "jira-gitlab-inte"],
     "require": {
-        "lesstif/php-jira-rest-client": "dev-master",
+        "lesstif/php-jira-rest-client": "^1.4",
         "laravel/lumen": "5.1.*",
         "guzzlehttp/guzzle": "~6.0",
         "league/flysystem": "^1.0"

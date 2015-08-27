@@ -6,6 +6,6 @@ namespace App;
  * Simple exception
  * 
  */ 
-class GitlabException extends \Exception
+class JiraIntegrationException extends \Exception
 {
 }

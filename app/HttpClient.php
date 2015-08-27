@@ -10,6 +10,9 @@ class HttpClient
 	private $gitHost;
 	private $gitToken;
 
+	private $hookUrl;
+	private $debug = false;
+
 	public function __construct($path = null)
 	{
 		if (empty($path))
@@ -19,6 +22,13 @@ class HttpClient
 
         $this->gitHost  = str_replace("\"", "", getenv('GITLAB_HOST'));
         $this->gitToken = str_replace("\"", "", getenv('GITLAB_TOKEN'));
+
+        $this->hookUrl = str_replace("\"", "", getenv('HOOK_URL'));
+
+        $bool = str_replace("\"", "", getenv('APP_DEBUG'));
+
+        if (strtolower($bool) === 'true')
+        	$this->debug = true;        
 	}
 
 	public function getUser($id)
@@ -65,4 +75,60 @@ class HttpClient
 
         return json_decode($response->getBody());
 	}
+
+	/**
+	 * get All gitlab projects
+	 * 
+	 * @return [type] [description]
+	 */
+	public function getAllProjects()
+	{
+		return $this->request('projects/all');
+	}
+
+	/**
+	 * performing gitlab api request
+	 *
+	 * @param $uri API uri
+	 * @param $body body data
+	 * 
+	 * @return type json response
+	 */
+	public function send($uri, $body, $method = 'POST')
+	{
+		$client = new \GuzzleHttp\Client([
+            'base_uri' => $this->gitHost,
+            'timeout'  => 10.0,
+            'verify' => false,
+            ]);
+		
+		$postData['headers'] = ['PRIVATE-TOKEN' => $this->gitToken];
+
+		$postData['json'] = $body;
+
+		if ($this->debug) {
+			$postData['debug'] = fopen(base_path() . '/' . 'debug.txt', 'w');
+		}		
+
+		$request = new \GuzzleHttp\Psr7\Request($method, $this->gitHost . '/api/v3/' . $uri);
+
+		try{
+			$response = $client->send($request, $postData);
+		} catch (GuzzleHttp\Exception\ClientException $e) {
+			dump($response);
+		    echo $e->getRequest();
+		    if ($e->hasResponse()) {
+		        echo $e->getResponse();
+		    }
+		} 
+
+        if ($response->getStatusCode() != 200 && $response->getStatusCode() != 201)
+        {
+        	throw new JiraIntegrationException("Http request failed. status code : "
+        		. $response->getStatusCode() . " reason:" . $response->getReasonPhrase());
+        }
+
+        return json_decode($response->getBody());
+	}
+
 }

@@ -96,7 +96,7 @@ php artisan serve --host 0.0.0.0 --port 9000
 
 ## Configuration
 
-### gitlab configuration
+### gitlab web hook configuration
 - Choose  > **Project Settings** -> **Web Hooks**.
 - Setting URL to your gitlab-jira integration's running Host. (eg: **http://my-host.com:9000/gitlab/hook**)
 ![gitlab configuration.](https://cloud.githubusercontent.com/assets/404534/8638183/7f7951c2-28ed-11e5-987f-5258f1bc2bec.png)
@@ -108,6 +108,27 @@ $app->post('gitlab/hook',[
 ]);
 ```
 change to 'gitlab/hook' to desired the URI (eg: 'gitlab/my-hook-receiver')
+
+### auto gitlab webhook configuration
+1. modify 'url' field and save to hook.json
+
+	```json
+	{
+    "project_id": 5,
+    "url": "https://localhost:9000/gitlab/hook/",
+    "push_events": true,
+    "issues_events": false,
+    "merge_requests_events": true,
+    "tag_push_events": true
+	}
+	```
+2. modify url(ttp://my-host.com:9000/) to your url and running curl command
+
+	```sh
+	curl -X POST @hook.json http://my-host.com:9000/gitlab/projects/add-hook-all-projects
+	```
+
+3. login gitlab and goto Choose  > **Project Settings** -> **Web Hooks**.  Then confirm your web hook settings.
 
 ## Checking Installation  
 1.  To get started, let's running a curl command on your command line.
@@ -149,3 +170,4 @@ Apache V2 License
 * [JIRA 6.2 REST API documentation](https://docs.atlassian.com/jira/REST/6.2/)
 * [GitLab-EE Jira integration](http://doc.gitlab.com/ee/integration/jira.html)
 * [Processing JIRA issues with commit messages](https://confluence.atlassian.com/display/Cloud/Processing+JIRA+issues+with+commit+messages)
+
