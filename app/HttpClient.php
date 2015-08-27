@@ -94,7 +94,7 @@ class HttpClient
 	 * 
 	 * @return type json response
 	 */
-	public function post($uri, $body)
+	public function send($uri, $body, $method = 'POST')
 	{
 		$client = new \GuzzleHttp\Client([
             'base_uri' => $this->gitHost,
@@ -110,8 +110,10 @@ class HttpClient
 			$postData['debug'] = fopen(base_path() . '/' . 'debug.txt', 'w');
 		}		
 
+		$request = new \GuzzleHttp\Psr7\Request($method, $this->gitHost . '/api/v3/' . $uri);
+
 		try{
-			$response = $client->post($this->gitHost . '/api/v3/' . $uri, $postData);
+			$response = $client->send($request, $postData);
 		} catch (GuzzleHttp\Exception\ClientException $e) {
 			dump($response);
 		    echo $e->getRequest();

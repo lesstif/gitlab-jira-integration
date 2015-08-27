@@ -50,36 +50,55 @@ class ProjectController extends BaseController
         return json_encode($project, JSON_PRETTY_PRINT);
     }
 
+    public function addHookAllProjects(Request $request)
+    {
+        $projects = $this->ownedProjects();
+
+        foreach($projects as $proj) {
+            Log::info('add hook to project ' . $proj->name_with_namespace);
+            $this->addOrEditProjectHooks($request, $proj->id);
+        }
+    }
+
     /**
      * add or edit project hook settings
      * @param [Request] $request HTTP Request
      *
      * @link(http://doc.gitlab.com/ce/api/projects.html#add-project-hook, link)
      */
-    public function addOrEditProjectHooks(Request $request)
+    public function addOrEditProjectHooks(Request $request, $project_id = null)
     {
         $project = $request->json();
 
-        $gitUrl = sprintf('projects/%d/hooks', $project->get('project_id'));
+        if ($project_id == null)
+            $id = $project->get('project_id');
+        else 
+            $id = $project_id;
 
-        $hooks = $this->projectHooks($project->get('project_id'));
-        foreach ($hooks as $hook) {
-            # already registed...
-            if ($hook->url === $project->get('url')) {
-                continue;
-            }
-        }
+        // hook url
+        $url = $project->get('url');
 
-        $json['url'] = $project->get('url');
+        $gitUrl = sprintf('projects/%d/hooks', $id);
+
+        $json['url'] = $url;
        
         $json['push_events'] = $project->get('push_events') ?: true;
         $json['issues_events'] = $project->get('issues_events') ?: false;
         $json['merge_requests_events'] = $project->get('merge_requests_events') ?: true;
         $json['tag_push_events'] = $project->get('tag_push_events') ?: false;
 
+        //dump($json);
         $client = new HttpClient();
 
-        $response = $client->post($gitUrl, $json);
+        $method = 'POST';
+        $hookId = null;
+        if ($this->hookHasUrl($id, $project->get('url'), $hookId) == true) {
+            Log::info("project '$id' hook('$url') is already exist..");
+            $method = 'PUT';
+            $gitUrl .= '/' . $hookId;
+        }
+
+        $response = $client->send($gitUrl, $json, $method);
 
         return json_encode($response, JSON_PRETTY_PRINT);
     }
@@ -93,8 +112,31 @@ class ProjectController extends BaseController
     {
         $client = new HttpClient();
 
-        $response = $client->request('projects/' . $id . '/hooks');
-        return $response;
+        $hooks = $client->request('projects/' . $id . '/hooks');
+        return $hooks;
     }
 
+    /**
+     * check given hook's has same url.
+     *
+     * @param  [integer] $id project id
+     * @param  [string] $url hookUrl
+     * @return [boolean]     true: url already exist, false: none
+     */
+    private function hookHasUrl($id, $url, &$hookId)
+    {    
+        $hooks = $this->projectHooks($id);
+
+        $rs = rtrim($url, '/');
+
+        foreach($hooks as $h) {
+            $ls = rtrim($h->url, '/');
+            if ($ls === $rs) {
+                $hookId = $h->id;
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

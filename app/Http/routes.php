@@ -53,3 +53,8 @@ $app->get('gitlab/projects/hook/{id}', [
 $app->post('gitlab/projects/add-hook', [
     'as' => 'add-project-hook', 'uses' => 'ProjectController@addOrEditProjectHooks'
 ]);
+
+// set all project hook
+$app->post('gitlab/projects/add-hook-all-projects', [
+    'as' => 'add-all-project-hook', 'uses' => 'ProjectController@addHookAllProjects'
+]);
