@@ -14,6 +14,13 @@ use JiraRestApi\Configuration\DotEnvConfiguration;
 
 class GitlabController extends BaseController
 {
+    use \App\Env;
+
+    public function __construct($path = null)
+    {
+        $this->envLoad($path);
+    }
+
     /**
      * process request from gitlab webhook.
      *
@@ -22,7 +29,12 @@ class GitlabController extends BaseController
      */
     public function hookHandler(Request $request)
     {
-        Log::debug('hook received from ' . $request->header('X-Forwarded-For'));
+        $clientIp = !empty($request->header('X-Forwarded-For')) ?: $request->ip();
+        Log::debug('hook received from ' . $clientIp);
+
+        if ($this->isVerbose()) {
+            dump($request);
+        }
 
         $eventType = $request->headers->get('X-Gitlab-Event') ;
         if (is_null($eventType))
@@ -84,8 +96,12 @@ class GitlabController extends BaseController
             Log::debug('Commit : ' . json_encode($commit, JSON_PRETTY_PRINT));
 
             $issueKey = $this->extractIssueKey($commit['message']);
-            if (empty($issueKey))
+            if (empty($issueKey)) {
+                Log::debug('Can\'t found issue Key in commit message : ' . $commit['message']);
                 continue;
+            }
+
+            Log::debug("Found found issue Key($issueKey) in commit message : " . $commit['message']);
 
             $issueCount++;
 

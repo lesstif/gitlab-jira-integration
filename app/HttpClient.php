@@ -6,29 +6,11 @@ use Log;
 
 class HttpClient
 {
-	private $dotenv;
-	private $gitHost;
-	private $gitToken;
-
-	private $hookUrl;
-	private $debug = false;
+	use \App\Env;
 
 	public function __construct($path = null)
 	{
-		if (empty($path))
-			$path = base_path();
-
-		$dotenv = \Dotenv::load($path);
-
-        $this->gitHost  = str_replace("\"", "", getenv('GITLAB_HOST'));
-        $this->gitToken = str_replace("\"", "", getenv('GITLAB_TOKEN'));
-
-        $this->hookUrl = str_replace("\"", "", getenv('HOOK_URL'));
-
-        $bool = str_replace("\"", "", getenv('APP_DEBUG'));
-
-        if (strtolower($bool) === 'true')
-        	$this->debug = true;        
+		$this->envLoad($path);
 	}
 
 	public function getUser($id)
