@@ -152,7 +152,14 @@ class GitlabController extends BaseController
                 return $key[0];
             }
         }
-        $message = $config->referencing->message;
+
+        // Merge branch 'feature\/test-961' into develop\n",
+        $cnt = preg_match("/Merge\s+branch\s+'feature/i",  $subject, $matches);
+        if ($cnt > 0) {
+            $message =  str_replace("COMMIT_MESSAGE", $subject, $config->merging->message);
+        }else {
+            $message = $config->referencing->message;
+        }
         return null;
     }
 

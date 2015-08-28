@@ -78,6 +78,9 @@ Here is the default configuration, for interact with Jira.
     },
     "referencing": {
         "message": "[~%s] mentioned this issue in %s"
+    },
+    "merging": {
+        "message": "[~%s] COMMIT_MESSAGE with %s"
     }
 }
 ````
