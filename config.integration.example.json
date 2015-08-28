@@ -18,6 +18,9 @@
     },
     "referencing": {
         "message": "[~%s] mentioned this issue in %s"
+    },
+    "merging": {
+        "message": "[~%s] COMMIT_MESSAGE with %s"
     }
 }
 

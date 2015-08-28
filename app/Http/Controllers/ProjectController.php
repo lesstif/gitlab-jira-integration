@@ -16,6 +16,12 @@ use App\HttpClient;
  */
 class ProjectController extends BaseController
 {
+    use \App\Env;
+
+    public function __construct($path = null)
+    {
+        $this->envLoad($path);
+    }
 
     /**
      * Get a list of all GitLab projects

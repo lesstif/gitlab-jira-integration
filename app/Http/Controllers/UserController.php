@@ -17,7 +17,14 @@ use App\HttpClient;
  */
 class UserController extends BaseController
 {
+    use \App\Env;
+
 	private $userList = 'users.json';
+
+    public function __construct($path = null)
+    {
+        $this->envLoad($path);
+    }
 
 	/**
      * get gitlab username (aka 'lesstif') by id(int: 1)
