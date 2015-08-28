@@ -112,7 +112,7 @@ $app->post('gitlab/hook',[
 ```
 change to 'gitlab/hook' to desired the URI (eg: 'gitlab/my-hook-receiver')
 
-### auto gitlab webhook configuration
+### Batch gitlab webhook registration.
 1. modify 'url' field and save to hook.json
 
 	```json
