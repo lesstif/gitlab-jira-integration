@@ -128,7 +128,7 @@ change to 'gitlab/hook' to desired the URI (eg: 'gitlab/my-hook-receiver')
 2. modify url(ttp://my-host.com:9000/) to your url and running curl command
 
 	```sh
-	curl -X POST @hook.json http://my-host.com:9000/gitlab/projects/add-hook-all-projects
+	curl -X POST -d @hook.json http://my-host.com:9000/gitlab/projects/add-hook-all-projects
 	```
 
 3. login gitlab and goto Choose  > **Project Settings** -> **Web Hooks**.  Then confirm your web hook settings.
