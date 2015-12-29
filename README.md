@@ -3,6 +3,9 @@
 ## What is it?
 * [JIRA DVCS Connector Plugin](https://marketplace.atlassian.com/plugins/com.atlassian.jira.plugins.jira-bitbucket-connector-plugin) does not support gitlab.
 * [GitLab Community Edition](http://doc.gitlab.com/ee/integration/jira.html) does not support Advanced JIRA Integration(EE only feature).
+ 
+#### Note
+> GitLab 8.3 now supported Advanced JIRA Integration in CE. see https://about.gitlab.com/2015/12/22/gitlab-8-3-released/
 
 GitLab-JIRA-Integration is a small PHP standalone app executed by gitlab web hooks and interact with JIRA using JIRA-REST API.
 If you have questions contact to me or open an issue on GitHub.
