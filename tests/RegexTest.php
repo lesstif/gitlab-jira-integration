@@ -30,7 +30,7 @@ class RegexTest extends PHPUnit_Framework_TestCase
             "ref test-123 Issue" => 1,
             ];
 
-        $pattern = '[resolve|fix|see|ref]';
+        $pattern = '(resolve|fix|see|ref)';
         
         foreach($array as $subject => $matchCount)
         {
