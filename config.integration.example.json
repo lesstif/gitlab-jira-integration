@@ -8,11 +8,11 @@
         "keywords": [
             [
                 "Resolved",
-                "[resolve|fix]"
+                "(resolve|fix)"
             ],
             [
                 "Closed",
-                "[close]"
+                "close"
             ]
         ]
     },
